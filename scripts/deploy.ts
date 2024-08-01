@@ -1,30 +1,28 @@
-import { ethers } from 'hardhat';
-import fs from 'fs';
-import path from 'path';
+import { ethers } from 'hardhat'
+import fs from 'fs'
+import path from 'path'
 
 async function main() {
-  const Contract = await ethers.getContractFactory('TestNFT');
+  const Contract = await ethers.getContractFactory('PERC20Sample')
 
-  console.log('Deploying NFT...');
-  const contract = await Contract.deploy();
+  console.log('Deploying PERC20 token...')
+  const contract = await Contract.deploy()
 
-  await contract.waitForDeployment();
-  const contractAddress = await contract.getAddress();
+  await contract.waitForDeployment()
+  const contractAddress = await contract.getAddress()
+  console.log('PERC20 token deployed to:', contractAddress)
 
-  console.log('NFT deployed to:', contractAddress);
+  const deployedAddressPath = path.join(__dirname, '..', 'utils', 'deployed-address.ts')
 
-  const deployedAddressPath = path.join(__dirname, '..', 'utils', 'deployed-address.ts');
+  const fileContent = `const deployedAddress = '${contractAddress}'\n\nexport default deployedAddress\n`
 
-  const fileContent = `const deployedAddress = '${contractAddress}'\n\nexport default deployedAddress\n`;
-
-  fs.mkdirSync(path.join(__dirname, '..', 'utils'), { recursive: true });
-  fs.writeFileSync(deployedAddressPath, fileContent, { encoding: 'utf8' });
-  console.log('Address written to deployed-address.ts');
+  fs.writeFileSync(deployedAddressPath, fileContent, { encoding: 'utf8' })
+  console.log('Address written to deployed-address.ts')
 }
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  });
+    console.error(error)
+    process.exit(1)
+})
